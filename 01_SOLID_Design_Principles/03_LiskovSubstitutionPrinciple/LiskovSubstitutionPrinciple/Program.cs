@@ -44,22 +44,20 @@ namespace LiskovSubstitutionPrinciple
     public class Square : Rectangle
     {
         // =================================================================================
-        //public new int Width
-        //{
-        //    set { base.Width = base.Height = value; }
-        //}
+            //public new int Width
+            //{ set { base.Width = base.Height = value; } }
 
-        //public new int Height
-        //{
-        //    set { base.Width = base.Height = value; }
-        //}
-        // This violates the Liskov principle.
-        // It should be allowed that we can substitute the Square class for Rectangle
-        // like so:
-        // Rectangle sq = new Square(); 
-        // sq.Width = 4;
-        // But doing so will leave the Height property as 0.
+            //public new int Height
+            //{ set { base.Width = base.Height = value; } }
 
+            // This violates the Liskov principle.
+            // It should be allowed that we can substitute the Square class for Rectangle
+            // like so:
+            // Rectangle sq = new Square(); 
+            // sq.Width = 4;
+            // But doing so will leave the Height property as 0.
+            // The solution below is to use "virtual" properties on the base class and instead
+            // of using the "new" keyword in this subclass, use override. 
         // =================================================================================
         public override int Width
         {
