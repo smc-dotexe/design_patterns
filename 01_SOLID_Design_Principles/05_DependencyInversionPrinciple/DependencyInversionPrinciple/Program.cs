@@ -44,7 +44,7 @@ namespace DependencyInversionPrinciple
         //public List<(Person, Relationship, Person)> Relations => relations;
         // ====================================================================
 
-
+        // ====================================================================
         // Solution. We now depend on an abstraction
         public IEnumerable<Person> FindAllChildrenOf(string name)
         {
@@ -56,7 +56,7 @@ namespace DependencyInversionPrinciple
                 yield return r.Item3;
             }
         }
-
+        // ====================================================================
     }
 
     // High-level
