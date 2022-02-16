@@ -50,28 +50,57 @@ internal class CoffeeFactory : IHotDrinkFactory
 
 public class HotDrinkMachine
 {
-    public enum AvailableDrink
-    {
-        Coffee, Tea
-    }
+    //public enum AvailableDrink
+    //{
+    //    Coffee, Tea
+    //}
 
-    private Dictionary<AvailableDrink, IHotDrinkFactory> factories = 
-        new Dictionary<AvailableDrink,IHotDrinkFactory>();
+    //private Dictionary<AvailableDrink, IHotDrinkFactory> factories = 
+    //    new Dictionary<AvailableDrink,IHotDrinkFactory>();
 
+    //public HotDrinkMachine()
+    //{
+    //    foreach (AvailableDrink drink in Enum.GetValues(typeof(AvailableDrink)))
+    //    {
+    //        var factory = (IHotDrinkFactory)Activator.CreateInstance(
+    //            Type.GetType(Enum.GetName(typeof(AvailableDrink), drink) + " Factory")
+    //        );
+    //        factories.Add(drink, factory);
+    //    }
+    //}
+
+    //public IHotDrink MakeDrink(AvailableDrink drink, int amount)
+    //{
+    //    return factories[drink].Prepare(amount);
+    //}
+    private List<Tuple<string, IHotDrinkFactory>> factories = new List<Tuple<string, IHotDrinkFactory>>();
     public HotDrinkMachine()
     {
-        foreach (AvailableDrink drink in Enum.GetValues(typeof(AvailableDrink)))
+        foreach (var t in typeof(HotDrinkMachine).Assembly.GetTypes())
         {
-            var factory = (IHotDrinkFactory) Activator.CreateInstance(
-                Type.GetType("DesignPatterns." + Enum.GetName(typeof(AvailableDrink), drink) + " Factory")
-            );
-            factories.Add(drink, factory);
+            if (typeof(IHotDrinkFactory).IsAssignableFrom(t) &&
+                !t.IsInterface)
+            {
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+                factories.Add(Tuple.Create(
+                    t.Name.Replace("Factory", string.Empty),
+                    (IHotDrinkFactory)Activator.CreateInstance(t)
+                    ));
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+            }
         }
     }
 
-    public IHotDrink MakeDrink(AvailableDrink drink, int amount)
+    public IHotDrink MakeDrink()
     {
-        return factories[drink].Prepare(amount);
+        Console.WriteLine("Available drinks:");
+        for (var index = 0; index < factories.Count; index++)
+        {
+            var tuple = factories[index];
+            Console.WriteLine($"{index}: {tuple.Item1}");
+        }
+
+        return null;
     }
 }
 
@@ -80,6 +109,6 @@ public class AbstractFactory
     static void Main(string[] args)
     {
         var machine = new HotDrinkMachine();
-        var drink = machine.MakeDrink(HotDrinkMachine.AvailableDrink.Tea, 100);
+        var drink = machine.MakeDrink();
     }
 }
